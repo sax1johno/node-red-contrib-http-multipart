@@ -23,51 +23,18 @@ module.exports = function(RED) {
     var bodyParser = require("body-parser");
     var getBody = require('raw-body');
     var cors = require('cors');
-    var jsonParser = bodyParser.json();
-    var urlencParser = bodyParser.urlencoded({extended:true});
+    var jsonParser = bodyParser.json({defer: true});
+    var urlencParser = bodyParser.urlencoded({extended:true, defer: true});
     var onHeaders = require('on-headers');
     var typer = require('media-typer');
     // Use multer for parsing multi-part forms with fil
     var multer = require('multer');
-    var storage = multer.memoryStorage()
-    var upload = multer({ storage: storage });
+    var upload = multer({
+        "dest": "/tmp"
+    });
     var isUtf8 = require('is-utf8');
-
-    function rawBodyParser(req, res, next) {
-        if (req._body) { return next(); }
-        req.body = "";
-        req._body = true;
-
-        var isText = true;
-        var checkUTF = false;
-
-        if (req.headers['content-type']) {
-            var parsedType = typer.parse(req.headers['content-type'])
-            if (parsedType.type === "text") {
-                isText = true;
-            } else if (parsedType.subtype === "xml" || parsedType.suffix === "xml") {
-                isText = true;
-            } else if (parsedType.type !== "application") {
-                isText = false;
-            } else if (parsedType.subtype !== "octet-stream") {
-                checkUTF = true;
-            }
-        }
-
-        getBody(req, {
-            length: req.headers['content-length'],
-            encoding: isText ? "utf8" : null
-        }, function (err, buf) {
-            if (err) { return next(err); }
-            if (!isText && checkUTF && isUtf8(buf)) {
-                buf = buf.toString()
-            }
-
-            req.body = buf;
-            next();
-        });
-    }
-
+    var formidable = require('formidable');
+    
     var corsSetup = false;
 
     function createRequestWrapper(node,req) {
@@ -122,6 +89,7 @@ module.exports = function(RED) {
 
         return wrapper;
     }
+    
     function createResponseWrapper(node,res) {
         var wrapper = {
             _res: res
@@ -170,11 +138,10 @@ module.exports = function(RED) {
         corsHandler = cors(RED.settings.httpNodeCors);
         RED.httpNode.options("*",corsHandler);
     }
-
+    
     function HTTPIn(n) {
         RED.nodes.createNode(this,n);
         if (RED.settings.httpNodeRoot !== false) {
-
             if (!n.url) {
                 this.warn(RED._("httpInMultipart.errors.missing-path"));
                 return;
@@ -182,8 +149,67 @@ module.exports = function(RED) {
             this.url = n.url;
             this.method = n.method;
             this.swaggerDoc = n.swaggerDoc;
-
+            this.fields = n.fields;
             var node = this;
+            
+            this.rawBodyParser = function(req, res, next) {
+                if (req._body) { return next(); }
+                req.body = "";
+                req._body = true;
+                
+                var isText = true;
+                    var checkUTF = false;
+                    var isMultiPart = false;
+            
+                    if (req.headers['content-type']) {
+                        var parsedType = typer.parse(req.headers['content-type'])
+                        if (parsedType.type == "multipart") {
+                            console.log("type is multipart");
+                            isText = false;
+                            isMultiPart = true;
+                        }
+                        else if (parsedType.type === "text") {
+                            isText = true;
+                        } else if (parsedType.subtype === "xml" || parsedType.suffix === "xml") {
+                            isText = true;
+                        } else if (parsedType.type !== "application") {
+                            isText = false;
+                        } else if (parsedType.subtype !== "octet-stream") {
+                            checkUTF = true;
+                        }
+                    }
+                    
+                    if (isMultiPart) {
+                        upload.fields(this.fields)(req, res, function (err) {
+                            if (err) {
+                                console.log(err);
+                                next(err);
+                            } else {
+                                console.log("file = ", req.file);
+                                console.log("body = ", req.body);
+                                // next("Should've made the upload happen!");
+                                next();
+                            }
+                        });
+                    } else {
+                        getBody(req, {
+                            length: req.headers['content-length'],
+                            encoding: isText ? "utf8" : null
+                        }, function (err, buf) {
+                            console.log("inside of getBody");
+                            if (err) { return next(err); }
+                            if (!isText && checkUTF && isUtf8(buf)) {
+                                buf = buf.toString();
+                                req.body = buf;
+                                next();
+                            } else {
+                                req.body = buf;
+                                next();
+                            }
+                            // req.body = buf;
+                        });
+                    }
+                };
 
             this.errorHandler = function(err,req,res,next) {
                 node.warn(err);
@@ -233,11 +259,11 @@ module.exports = function(RED) {
             if (this.method == "get") {
                 RED.httpNode.get(this.url,httpMiddleware,corsHandler,metricsHandler,this.callback,this.errorHandler);
             } else if (this.method == "post") {
-                RED.httpNode.post(this.url,httpMiddleware,corsHandler,metricsHandler,upload.any(),jsonParser,urlencParser,rawBodyParser,this.callback,this.errorHandler);
+                RED.httpNode.post(this.url,httpMiddleware,corsHandler,metricsHandler,this.rawBodyParser, this.callback,this.errorHandler);
             } else if (this.method == "put") {
-                RED.httpNode.put(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,rawBodyParser,this.callback,this.errorHandler);
+                RED.httpNode.put(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,this.rawBodyParser,this.callback,this.errorHandler);
             } else if (this.method == "delete") {
-                RED.httpNode.delete(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,rawBodyParser,this.callback,this.errorHandler);
+                RED.httpNode.delete(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,this.rawBodyParser,this.callback,this.errorHandler);
             }
 
             this.on("close",function() {
