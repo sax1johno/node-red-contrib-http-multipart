@@ -16,51 +16,51 @@
 
 <script type="text/x-red" data-template-name="httpInMultipart">
     <div class="form-row">
-        <label for="node-input-method"><i class="fa fa-tasks"></i> <span data-i18n="httpInMultipart.label.method"></span></label>
+        <label for="node-input-method"><i class="fa fa-tasks"></i> <span data-i18n="httpInMultipart.label.method">Method</span></label>
         <select type="text" id="node-input-method" style="width:72%;">
-        <option value="get">GET</option>
         <option value="post">POST</option>
-        <option value="put">PUT</option>
-        <option value="delete">DELETE</option>
         </select>
     </div>
     <div class="form-row">
-        <label for="node-input-url"><i class="fa fa-globe"></i> <span data-i18n="httpInMultipart.label.url"></span></label>
+        <label for="node-input-url"><i class="fa fa-globe"></i> <span data-i18n="httpInMultipart.label.url">Url</span></label>
         <input type="text" id="node-input-url" placeholder="/url">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name">Name</span></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
     </div>
+    <div class="form-row">
+        <label for="node-input-fields"><i class="fa fa-wpforms"></i> <span data-i18n="httpInMultipart.label.fields">Fields</span></label>
+        <input type="text" id="node-input-fields" placeholder='[ {"name": "field1", "maxCount": 8}]'>
+    </div>
     <div class="form-row row-swagger-doc">
-        <label for="node-input-swaggerDoc"><i class="fa fa-file-text-o"></i> <span data-i18n="httpInMultipart.label.doc"></span></label>
+        <label for="node-input-swaggerDoc"><i class="fa fa-file-text-o"></i> <span data-i18n="httpInMultipart.label.doc">Swagger Docs</span></label>
         <input type="text" id="node-input-swaggerDoc">
     </div>
     <div id="node-input-tip" class="form-tips"><span data-i18n="httpInMultipart.tip.in"></span><code><span id="node-input-path"></span></code>.</div>
 </script>
 
 <script type="text/x-red" data-help-name="httpInMultipart">
-    <p>Provides an input node for http requests, allowing the creation of simple web services.</p>
+    <p>Provides an input node for http requests that contain multi-part data, including files.</p>
     <p>The resulting message has the following properties:
         <ul>
             <li>msg.req : <a href="http://expressjs.com/api.html#req">http request</a></li>
             <li>msg.res : <a href="http://expressjs.com/api.html#res">http response</a></li>
         </ul>
     </p>
-    <p>For POST/PUT requests, the body is available under <code>msg.req.body</code>. This
-       uses the <a href="http://expressjs.com/api.html#bodyParser">Express bodyParser middleware</a> to parse the content to a JSON object.
+    <p>
+        The "fields" section contains an array of key / value pairs which with the following format:
+        <pre>[{ "name": "<field name>"}]</pre>
     </p>
     <p>
-        For multi-part POST requests, the files are available under msg.req.files and the meta-data about files
-        are contained in msg.req.body.
+        You can also pass in an optional "maxCount" value can be passed in as well.  This limits the number
+        of files that can be uploaded.
+        <pre>[{ "name": "<field name>", "maxCount": 1}]</pre>
     </p>
     <p>
-       By default, this expects the body of the request to be url encoded:
-       <pre>foo=bar&amp;this=that</pre>
-    </p>
-    <p>
-       To send JSON encoded data to the node, the content-type header of the request must be set to
-       <code>application/json</code>.
+        For multi-part requests with files, the files are available as a Javascript object with 
+        the name of the field as the key and an array of files as the value.  Files can be found
+        under msg.req.files and other form fields are contained in msg.req.body.
     </p>
     <p>
        <b>Note: </b>This node does not send any response to the http request.
@@ -77,7 +77,8 @@
         defaults: {
             name: {value:""},
             url: {value:"",required:true},
-            method: {value:"get",required:true},
+            method: {value:"post",required:true},
+            fields: {value: "", required: true},
             swaggerDoc: {type:"swagger-doc", required:false}
         },
         inputs:0,

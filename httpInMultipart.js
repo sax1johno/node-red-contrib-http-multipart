@@ -180,7 +180,8 @@ module.exports = function(RED) {
                     }
                     
                     if (isMultiPart) {
-                        upload.fields(this.fields)(req, res, function (err) {
+                        var fields = JSON.parse(node.fields);
+                        upload.fields(fields)(req, res, function (err) {
                             if (err) {
                                 console.log(err);
                                 next(err);
