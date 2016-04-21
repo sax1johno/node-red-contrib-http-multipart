@@ -257,16 +257,12 @@ module.exports = function(RED) {
                 };
             }
 
-            if (this.method == "get") {
-                RED.httpNode.get(this.url,httpMiddleware,corsHandler,metricsHandler,this.callback,this.errorHandler);
-            } else if (this.method == "post") {
-                RED.httpNode.post(this.url,httpMiddleware,corsHandler,metricsHandler,this.rawBodyParser, this.callback,this.errorHandler);
+            if (this.method == "post") {
+                RED.httpNode.post(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser, urlencParser, this.rawBodyParser, this.callback,this.errorHandler);
             } else if (this.method == "put") {
                 RED.httpNode.put(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,this.rawBodyParser,this.callback,this.errorHandler);
-            } else if (this.method == "delete") {
-                RED.httpNode.delete(this.url,httpMiddleware,corsHandler,metricsHandler,jsonParser,urlencParser,this.rawBodyParser,this.callback,this.errorHandler);
             }
-
+            
             this.on("close",function() {
                 var node = this;
                 RED.httpNode._router.stack.forEach(function(route,i,routes) {
