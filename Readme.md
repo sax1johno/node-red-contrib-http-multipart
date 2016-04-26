@@ -8,7 +8,7 @@ This node is a version of the Node-Red HTTP-in node that includes support for mu
 ### Installation
 
 ```sh
-$ npm install node-red-contrib-seneca
+$ npm install node-red-contrib-http-multipart
 ```
 node-red should automatically detect the new node upon restarting of the server.
 
