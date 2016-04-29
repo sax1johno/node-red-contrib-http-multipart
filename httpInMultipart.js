@@ -164,7 +164,6 @@ module.exports = function(RED) {
                     if (req.headers['content-type']) {
                         var parsedType = typer.parse(req.headers['content-type'])
                         if (parsedType.type == "multipart") {
-                            console.log("type is multipart");
                             isText = false;
                             isMultiPart = true;
                         }
@@ -183,12 +182,8 @@ module.exports = function(RED) {
                         var fields = JSON.parse(node.fields);
                         upload.fields(fields)(req, res, function (err) {
                             if (err) {
-                                console.log(err);
                                 next(err);
                             } else {
-                                console.log("file = ", req.file);
-                                console.log("body = ", req.body);
-                                // next("Should've made the upload happen!");
                                 next();
                             }
                         });
@@ -197,7 +192,6 @@ module.exports = function(RED) {
                             length: req.headers['content-length'],
                             encoding: isText ? "utf8" : null
                         }, function (err, buf) {
-                            console.log("inside of getBody");
                             if (err) { return next(err); }
                             if (!isText && checkUTF && isUtf8(buf)) {
                                 buf = buf.toString();
