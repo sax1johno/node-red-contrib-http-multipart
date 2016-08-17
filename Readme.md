@@ -27,7 +27,7 @@ the `fields` section of your node configuration would contain the following:
 ```
 [ { "name": "myUploadedFile"} ]
 ```
-The fields configuration is passed directly to the [Fields](https://github.com/expressjs/multer#fieldsfields) option in the multer plugin, so you can use any options that would work for multer in the configuration area.
+The fields configuration is passed directly to the [Fields](https://github.com/expressjs/multer#fieldsfields) option in the [multer](https://github.com/expressjs/multer) plugin, so you can use any options that would work for multer in the configuration area.
 ex:
 ```
 [
