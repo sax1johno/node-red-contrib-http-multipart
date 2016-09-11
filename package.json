@@ -18,11 +18,23 @@
     "name": "John O'Connor",
     "url": "sax1johno@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sax1johno/node-red-contrib-http-multipart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sax1johno/node-red-contrib-http-multipart/issues"
+  },  
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "connect-busboy": "0.0.2",
+    "cors": "^2.8.1",
     "formidable": "^1.0.17",
-    "multer": "^1.1.0",
-    "node-red": "^0.13.3"
+    "is-utf8": "^0.2.1",
+    "media-typer": "^0.3.0",
+    "multer": "^1.2.0",
+    "on-headers": "^1.0.1",
+    "raw-body": "^2.1.7"
   }
 }
