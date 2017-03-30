@@ -29,8 +29,10 @@ module.exports = function(RED) {
     var typer = require('media-typer');
     // Use multer for parsing multi-part forms with fil
     var multer = require('multer');
+    var storage = multer.memoryStorage();
     var upload = multer({
-        "dest": "/tmp"
+        "dest": "/tmp",
+        "storage": storage
     });
     var isUtf8 = require('is-utf8');
     var formidable = require('formidable');
