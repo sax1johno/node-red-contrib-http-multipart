@@ -35,6 +35,9 @@ ex:
   { name: 'gallery', maxCount: 8 }
 ]
 ```
+
+The "storage" section dictates how the files are saved and what data that will be returned. "Disk" will return a path to the file and "Memory" will return a buffer. For more information on limitations involved with the different storage options please refer to the Multer documentation.
+
 #### Example
 With HTML like the following:
 ```html

@@ -34,6 +34,13 @@
         <label for="node-input-fields"><i class="fa fa-wpforms"></i> <span data-i18n="httpInMultipart.label.fields">Fields</span></label>
         <input type="text" id="node-input-fields" placeholder='[ {"name": "field1", "maxCount": 8}]'>
     </div>
+    <div class="form-row">
+        <label for="node-input-storage"><i class="fa fa-tasks"></i> <span data-i18n="httpInMultipart.label.storage">Storage</span></label>
+        <select type="text" id="node-input-storage" style="width:72%;">
+        <option value="disk">Disk</option>
+        <option value="memory">Memory</option>
+        </select>
+    </div>
     <div class="form-row row-swagger-doc">
         <label for="node-input-swaggerDoc"><i class="fa fa-file-text-o"></i> <span data-i18n="httpInMultipart.label.doc">Swagger Docs</span></label>
         <input type="text" id="node-input-swaggerDoc">
@@ -52,6 +59,9 @@
     <p>
         The "fields" section contains an array of key / value pairs which with the following format:
         <pre>[{ "name": "<field name>"}]</pre>
+    </p>
+    <p>
+        The "storage" section dictates how the files are saved and what data that will be returned. "Disk" will return a path to the file and "Memory" will return a buffer.
     </p>
     <p>
         You can also pass in an optional "maxCount" value can be passed in as well.  This limits the number
@@ -80,6 +90,7 @@
             url: {value:"",required:true},
             method: {value:"post",required:true},
             fields: {value: "", required: true},
+            storage: {value: "disk", required: true},
             swaggerDoc: {type:"swagger-doc", required:false}
         },
         inputs:0,
