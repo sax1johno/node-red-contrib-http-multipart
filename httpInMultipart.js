@@ -20,17 +20,19 @@
  **/
 module.exports = function(RED) {
     "use strict";
-    var bodyParserConfig = RED.settings.bodyParserConfig || {}
+    var bodyParserConfig = RED.settings.bodyParserConfig || {"limit": "50mb"};
     var bodyParser = require("body-parser");
     var getBody = require('raw-body');
     var cors = require('cors');
 
     var jsonParserConfig = bodyParserConfig;
     jsonParserConfig.defer = true;
+    jsonParserConfig.type ='application/json';
 
     var urlEncParserConfig = bodyParserConfig;
     urlEncParserConfig.extended = true;
     urlEncParserConfig.defer = true;
+    urlEncParserConfig.type ='application/x-www-form-urlencoding';    
 
     var jsonParser = bodyParser.json(jsonParserConfig);
     var urlencParser = bodyParser.urlencoded(urlEncParserConfig);
