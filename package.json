@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-http-multipart",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A node-red node for providing multi-part form support for the standard node-red HTTP node.",
   "keywords": [
     "node-red",
