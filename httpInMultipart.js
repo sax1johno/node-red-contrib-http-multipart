@@ -20,7 +20,7 @@
  **/
 module.exports = function(RED) {
     "use strict";
-    var bodyParserConfig = RED.settings.bodyParserLimit || {}
+    var bodyParserConfig = RED.settings.bodyParserConfig || {}
     var bodyParser = require("body-parser");
     var getBody = require('raw-body');
     var cors = require('cors');
