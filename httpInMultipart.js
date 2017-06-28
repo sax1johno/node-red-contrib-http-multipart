@@ -20,11 +20,20 @@
  **/
 module.exports = function(RED) {
     "use strict";
+    var bodyParserConfig = RED.settings.bodyParserLimit || {}
     var bodyParser = require("body-parser");
     var getBody = require('raw-body');
     var cors = require('cors');
-    var jsonParser = bodyParser.json({defer: true});
-    var urlencParser = bodyParser.urlencoded({extended:true, defer: true});
+
+    var jsonParserConfig = bodyParserConfig;
+    jsonParserConfig.defer = true;
+
+    var urlEncParserConfig = bodyParserConfig;
+    urlEncParserConfig.extended = true;
+    urlEncParserConfig.defer = true;
+
+    var jsonParser = bodyParser.json(jsonParserConfig);
+    var urlencParser = bodyParser.urlencoded(urlEncParserConfig);
     var onHeaders = require('on-headers');
     var typer = require('media-typer');
     // Use multer for parsing multi-part forms with fil
