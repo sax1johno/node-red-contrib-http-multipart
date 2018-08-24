@@ -40,9 +40,6 @@ module.exports = function(RED) {
     var typer = require('media-typer');
     // Use multer for parsing multi-part forms with fil
     var multer = require('multer');
-    var upload = multer({
-        "dest": "/tmp"
-    });
     var isUtf8 = require('is-utf8');
     var formidable = require('formidable');
     
@@ -161,6 +158,7 @@ module.exports = function(RED) {
             this.method = n.method;
             this.swaggerDoc = n.swaggerDoc;
             this.fields = n.fields;
+            this.fileDest = n.fileDest;
             var node = this;
             
             this.rawBodyParser = function(req, res, next) {
@@ -191,6 +189,9 @@ module.exports = function(RED) {
                     
                     if (isMultiPart) {
                         var fields = JSON.parse(node.fields);
+                        var upload = multer({
+                            "dest": node.fileDest
+                        });
                         upload.fields(fields)(req, res, function (err) {
                             if (err) {
                                 next(err);
