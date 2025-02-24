@@ -34,6 +34,10 @@
         <label for="node-input-fields"><i class="fa fa-wpforms"></i> <span data-i18n="httpInMultipart.label.fields">Fields</span></label>
         <input type="text" id="node-input-fields" placeholder='[ {"name": "field1", "maxCount": 8}]'>
     </div>
+    <div class="form-row">
+        <label for="node-input-fileDest"><i class="fa fa-folder"></i> <span data-i18n="httpInMultipart.label.fileDest">File Dest</span></label>
+        <input type="text" id="node-input-fileDest" placeholder='/tmp'>
+    </div>
     <div class="form-row row-swagger-doc">
         <label for="node-input-swaggerDoc"><i class="fa fa-file-text-o"></i> <span data-i18n="httpInMultipart.label.doc">Swagger Docs</span></label>
         <input type="text" id="node-input-swaggerDoc">
@@ -80,6 +84,7 @@
             url: {value:"",required:true},
             method: {value:"post",required:true},
             fields: {value: "", required: true},
+            fileDest: {value: "/tmp", required: true},
             swaggerDoc: {type:"swagger-doc", required:false}
         },
         inputs:0,
