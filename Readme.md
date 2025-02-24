@@ -1,3 +1,5 @@
+# OBSOLETE: Node-RED added multi-part form and file support to the built-in HTTP-in node in Version 1.0.  Use that instead of this node.
+
 # Node-Red Node HTTP with Multi-Part Support
 
 This node is a version of the Node-Red HTTP-in node that includes support for multi-part forms and files using Multer.
